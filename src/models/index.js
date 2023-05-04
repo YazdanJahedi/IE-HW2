@@ -7,11 +7,14 @@ const db = {};
 db.mongoose = mongoose;
 db.url = dbConfig.url;
 
-db.users = require("./users.model.js")(mongoose);
-db.students = require("./students.model.js")(mongoose);
-db.teachers = require("./teachers.model.js")(mongoose);
-db.edu_managers = require("./edu_manager.model.js")(mongoose);
-db.basic_lesssons = require("./basic_lessons.model.js")(mongoose);
-db.termic_lessons = require("./termic_lessons.model.js")(mongoose);
+let all_models = require("./schemas.model.js")(mongoose);
+
+db.users = all_models.users;
+db.students = all_models.students;
+db.teachers = all_models.teachers;
+db.edu_managers = all_models.eduManagers;
+db.it_manager = all_models.ITManager;
+db.basic_lesssons = all_models.basicLessons;
+db.termic_lessons = this.termicLessons;
 
 module.exports = db;

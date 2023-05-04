@@ -1,5 +1,10 @@
-module.exports = mongoose => {
-    var schema = mongoose.Schema(
+module.exports = mongoose => { 
+    const user_discrimintor = {
+      discriminatorKey: "type",
+      collection: "Users"
+    }
+
+    var schema = new mongoose.Schema(
       {
         firstname: { type: String, required: true },
         lastname: { type: String, required: true },
@@ -8,7 +13,7 @@ module.exports = mongoose => {
         email: String, 
         phone_number: Number,
       },
-      { timestamps: true }
+      user_discrimintor
     );
   
     schema.method("toJSON", function() {

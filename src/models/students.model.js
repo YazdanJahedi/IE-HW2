@@ -1,6 +1,6 @@
-const Users = require("./users.model.js");
-
 module.exports = mongoose => {
+    const Users = require("./users.model.js")(mongoose);
+
     const Students = Users.discriminator('Students', 
         new mongoose.Schema({
             grade: String, 
@@ -8,7 +8,7 @@ module.exports = mongoose => {
             entry_semister: Number,
             GPA: Number,
             faculty: String,
-            field: String,
+            field: String
         })
     );
     return Students;
