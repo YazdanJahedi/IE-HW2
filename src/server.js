@@ -12,7 +12,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-/*
+
 const db = require("./models");
 db.mongoose
   .connect(db.url, {
@@ -26,7 +26,7 @@ db.mongoose
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
-*/
+
 
 // simple basic route
 app.get("/", (req, res) => {

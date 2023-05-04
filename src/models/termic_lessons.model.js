@@ -1,4 +1,4 @@
-const Basic_lessons = require("./users.model");
+const Basic_lessons = require("./users.model.js");
 
 module.exports = mongoose => {
     const Termic = Basic_lessons.discriminator('Termic_lessons', 

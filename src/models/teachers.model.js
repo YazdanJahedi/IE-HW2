@@ -1,4 +1,4 @@
-const Users = require("./users.model");
+const Users = require("./users.model.js");
 
 module.exports = mongoose => {
     const Teachers = Users.discriminator('Teachers', 
