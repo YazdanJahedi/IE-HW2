@@ -1,10 +1,10 @@
 module.exports = mongoose => {
     var schema = mongoose.Schema(
       {
-        firstname: String,
-        lastname: String,
-        user_id: String,
-        password: String, 
+        firstname: { type: String, required: true },
+        lastname: { type: String, required: true },
+        user_id: { type: String, required: true },
+        password: { type: String, required: true }, 
         email: String, 
         phone_number: Number,
       },
@@ -15,8 +15,8 @@ module.exports = mongoose => {
       const { __v, _id, ...object } = this.toObject();
       object.id = _id;
       return object;
-    });2
+    });
   
-    const Tutorial = mongoose.model("users", schema);
-    return Tutorial;
+    const Users = mongoose.model("Users", schema);
+    return Users;
   };
