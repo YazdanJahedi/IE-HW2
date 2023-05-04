@@ -7,8 +7,9 @@ module.exports = mongoose => {
             entry_year: Number,
             entry_semister: Number,
             GPA: Number,
-            faculty: String
+            faculty: String,
+            field: String,
         })
     );
     return Students;
-  };
+};
