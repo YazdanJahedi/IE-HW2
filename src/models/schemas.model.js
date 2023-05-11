@@ -6,7 +6,7 @@ module.exports = mongoose => {
         user_id: { type: String, required: true },
         password: { type: String, required: true }, 
         email: String, 
-        phone_number: Number,
+        phone_number: String,
       },
       { timestamps: true }
     );
@@ -28,7 +28,8 @@ module.exports = mongoose => {
             entry_semister: Number,
             GPA: Number,
             faculty: String,
-            field: String
+            study_field: String,
+            courses: [String],
         })
     );
 
@@ -39,6 +40,7 @@ module.exports = mongoose => {
             faculty: String,
             field: String,
             rank: String,
+            courses: [String],
         })
     );
 
@@ -54,9 +56,10 @@ module.exports = mongoose => {
 
     let schema2 = mongoose.Schema(
         {
-          name: { type: String, required: true },
-          prerequisites: String,
-          corequisite: String,
+          course_name: { type: String, required: true },
+          pre_requisites: [String],
+          co_requisite: [String],
+          units: Number,
         },
         { timestamps: true }
       );
@@ -88,6 +91,21 @@ module.exports = mongoose => {
 
     const IT_man_model = Users_model.discriminator('IT_mangager', mongoose.Schema({}))
 
+    // ----------------------------------------------
+
+    let token_schema = new mongoose.Schema(
+      {
+          user_id : String,
+          token : String,
+          type : String
+      }
+    );
+
+    token_schema.index( { "expireAt": 1 }, { expireAfterSeconds: 600 } );
+    const Token_model = new mongoose.model("Token",token_schema);
+
+    // ----------------------------------------------
+
     return {
         users: Users_model,
         students: Students_model,
@@ -95,6 +113,7 @@ module.exports = mongoose => {
         eduManagers: Edu_man_model,
         ITManager: IT_man_model,
         basicLessons: Lessons_model,
-        termicLessons: Termic_model
+        termicLessons: Termic_model,
+        token: Token_model,
     };
   };
