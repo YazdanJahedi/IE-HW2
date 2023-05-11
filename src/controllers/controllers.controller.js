@@ -131,7 +131,6 @@ exports.findAllUsers =  function findAllUsers(user) {
     }
 }
 
-
 exports.findUser = function(user){
     const obj = selType(user);
     return (req,res)=>{

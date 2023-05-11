@@ -1,8 +1,8 @@
 module.exports = app =>{
     const controllers = require("../controllers/controllers.controller.js");
-
-    
     var route = require('express').Router();
+    const auth = require("../controllers/auth.controller.js");
+
    
     // admin:  create  student/prof/edu_manager
     route.post('/admin/student', controllers.createUser("Student"));
@@ -27,7 +27,10 @@ module.exports = app =>{
     // admin:  change  student/prof/edu_manager
     // IN progress... !!!!
 
-    
+    // users login
+    route.post('/login', auth.sign_in);
+
+
 
     app.use('/api', route);
 }
