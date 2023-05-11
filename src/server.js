@@ -34,9 +34,7 @@ app.get("/", (req, res) => {
   res.end();
 });
 
-/*
-require("./routes/tutorial.routes")(app);
-*/ 
+require("./routes/routes.route.js")(app);
 
 const PORT = process.env.PORT || 9090;
 
