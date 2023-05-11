@@ -1,18 +1,32 @@
 const db = require("../models");
 const schemas = db.schemas;
+var bcrypt = require("bcrypt");
+
+function selType(user){
+    switch (user)
+    {
+        case "Student" :
+            return db.students;
+        case "Professor" :
+            return db.teachers;
+        case "EducationManager" :
+            return db.edu_managers;
+    }
+}
+
 
 exports.createUser = function createUser(user){
     return  (req, res) => {
         console.log(req.body);
         let obj = null;
-        // const pass = bcrypt.hashSync(req.body.user_password,8);
+        const hashed_password = bcrypt.hashSync(req.body.password, 8);
         switch(user){
             case "Student" :
                 obj = new db.students({
                     firstname : req.body.firstname,
                     lastname: req.body.lastname,
                     user_id : req.body.user_id,
-                    password : req.body.password, // todo: check diff
+                    password : hashed_password,
                     email : req.body.email,
                     phone_number: req.body.phone_numer,
                     // --------------------
@@ -21,41 +35,44 @@ exports.createUser = function createUser(user){
                     entry_semister : req.body.entry_semister,
                     GPA : req.body.GPA,
                     faculty : req.body.faculty,
-                    study_field : req.body.study_field
+                    study_field : req.body.study_field,
                 });
                 break;
-/*
+
             case "Professor" :
-                obj = new schemas.professor({
-                    user_name : req.body.user_name,
-                    _id : req.body._id,
-                    user_password : pass,
-                    user_email : req.body.user_email,
-                    user_phone : req.body.user_phone,
-                    prf_dpt : req.body.prf_dpt,
-                    prf_major : req.body.prf_major,
-                    prf_level : req.body.prf_level
+                obj = new db.teachers({
+                    firstname : req.body.firstname,
+                    lastname: req.body.lastname,
+                    user_id : req.body.user_id,
+                    password : hashed_password,
+                    email : req.body.email,
+                    phone_number: req.body.phone_numer,
+                    // --------------------
+                    faculty : req.body.faculty,
+                    field : req.body.field,
+                    rank : req.body.rank,
                 });
                 break;
 
             case "EducationManager" :
-                obj = new schemas.educationManager({
-                    user_name : req.body.user_name,
-                    _id : req.body._id,
-                    user_password : pass,
-                    user_email : req.body.user_email,
-                    user_phone : req.body.user_phone,
-                    em_dept : req.body.em_dept
+                obj = new db.edu_managers({
+                    firstname : req.body.firstname,
+                    lastname: req.body.lastname,
+                    user_id : req.body.user_id,
+                    password : hashed_password,
+                    email : req.body.email,
+                    phone_number: req.body.phone_numer,
+                    // --------------------
+                    faculty : req.body.faculty
                 });
                 break;
-*/
+
         }
-        if (obj == null)
+        if (obj == null){
             res.status(400).send({
                 message : "can only add student professor and em"
             })
-        else
-        {
+        } else {
             obj.save().then(()=>{
                 res.send(obj);
             }).catch(err=>{
@@ -66,3 +83,30 @@ exports.createUser = function createUser(user){
         }
     }
 }
+
+exports.deleteUser = function deleteUser(user){
+    return (req,res) => {
+        const id = req.params.id;
+        const obj = selType(user);
+        obj.findByIdAndRemove(id).then(data => {
+            if (!data)
+            {
+                res.status(404).send({
+                    message :"user not found"
+                });
+            }
+            else{
+                res.status(200).send({
+                    message : "user deleted successfully"
+                });
+            }
+        }).catch(err => {
+            res.status(500).send(
+                {
+                    message:"can't delete user"
+                }
+            );
+        });
+    }
+}
+
