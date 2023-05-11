@@ -131,3 +131,19 @@ exports.findAllUsers =  function findAllUsers(user) {
     }
 }
 
+
+exports.findUser = function(user){
+    const obj = selType(user);
+    return (req,res)=>{
+        const id = req.params.id;
+        obj.findById(id).then(data=>{
+            res.status(200).send(data)
+        }).catch(err => {
+            res.status(500).send({
+                message: err.message || "Some error occurred while retrieving user."
+            });
+        });
+    }
+}
+
+

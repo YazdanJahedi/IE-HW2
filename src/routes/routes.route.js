@@ -19,7 +19,15 @@ module.exports = app =>{
     route.get('/admin/professors', controllers.findAllUsers("Professor"));
     route.get('/admin/managers', controllers.findAllUsers("EducationManager"));
 
+    // admin:  find_by_ID  student/prof/edu_manager
+    route.get('/admin/student/:id', controllers.findUser("Student"));
+    route.get('/admin/professor/:id', controllers.findUser("Professor"));
+    route.get('/admin/manager/:id', controllers.findUser("EducationManager"));
+
+    // admin:  change  student/prof/edu_manager
+    // IN progress... !!!!
 
     
+
     app.use('/api', route);
 }
