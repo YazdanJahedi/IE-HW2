@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const cookieSession = require("cookie-session");
 
 const app = express();
 
@@ -11,7 +12,12 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use( cookieSession({
+      name: "some-session",
+      secret: "SOME_THING", // should use as secret environment variable
+      httpOnly: true
+    })
+);
 
 const db = require("./models");
 db.mongoose
