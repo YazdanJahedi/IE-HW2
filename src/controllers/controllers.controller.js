@@ -110,3 +110,24 @@ exports.deleteUser = function deleteUser(user){
     }
 }
 
+// has bug!! 
+exports.findAllUsers =  function findAllUsers(user) {
+    const obj = selType(user);
+    return  (req,res) => {
+        obj.find({type : user}).then(data=>{
+            if (!data) {
+                res.status(500).send(
+                    { message : "list is empty" }
+                )
+            } else {
+                console.log(data)
+                res.send(data);
+            }
+        }).catch(err=>{
+            res.status(500).send(
+                { message : err.message }
+            );
+        });
+    }
+}
+
