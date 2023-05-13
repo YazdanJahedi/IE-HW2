@@ -35,6 +35,9 @@ module.exports = app =>{
     route.post('/course', [authJwt.verifyToken], controllers.createCourse);
     route.delete('/course/:id', [authJwt.verifyToken], controllers.deleteCourse);
 
+    // Edu_manager/Student/Teachers: find_all/find_by_id lessons
+    route.get('/course/:id',[authJwt.verifyToken], controllers.manGetCoursesId);
+    route.get('/courses',[authJwt.verifyToken], controllers.manGetCourses);
 
 
 

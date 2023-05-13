@@ -201,3 +201,80 @@ exports.deleteCourse = (req,res)=>{
     });
 }
 
+// todo
+exports.manGetCourses = (req,res)=>{
+    db.token.findOne({
+        token : req.session.token
+    }).then((ftoken)=>{
+        if (ftoken.type == "Edu_mangager") {
+            db.basic_lesssons.find().then(data => {
+                if (!data) {
+                    res.status(404).send({
+                        message : "courses not found"
+                    });
+                } else {
+                    res.status(200).send({data});
+                }
+            }).catch(err => {
+                res.status(500).send(
+                    { message:"cant show " }
+                );
+            });
+        } else if (ftoken.type == "Student" || ftoken.type == "Professor") {
+            const id = ftoken.user_id;
+            const obj = selType(ftoken.type); // todo: sync names
+            obj.findById(id).select('courses').then(data=>{ // check
+                res.status(200).send({
+                    data
+                });
+            });
+        }else{
+            res.status(401).send({
+                message : "you cant see courses list"
+            });
+        }
+    });
+}
+
+// todo
+exports.manGetCoursesId = (req,res)=>{
+    schemas.token.findOne({
+        token : req.session.token
+    }).then((ftoken)=>{
+        if (ftoken.type == "Edu_mangager") {
+            const id = req.params.id;
+            schemas.course.findById(id).then(data => {
+                if (!data) {
+                    res.status(404).send({
+                        message :"course not found"
+                    });
+                }
+                else{
+                    res.status(200).send({data});
+                }
+            }).catch(err => {
+                res.status(500).send(
+                    { message:"cant show " }
+                );
+            });
+        }else if (ftoken.type == "Student" || ftoken.type == "Professor"){
+            const id = ftoken.user_id;
+            const course_id = req.params.id;
+            const obj = selType(ftoken.type); // todo: sync names
+            obj.findById(id).select('courses').then(data=>{
+                const found = data.find(element => element = course_id);
+                if (!found){
+                    res.status(404).send(
+                        { message : "this user does not have this course" }
+                    )
+                }else{
+                    res.status(200).send(found)
+                }
+            });
+        } else{
+            res.status(401).send({
+                message : "you cant see this course"
+            });
+        }
+    });
+}
