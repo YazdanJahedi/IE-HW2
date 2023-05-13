@@ -278,3 +278,69 @@ exports.manGetCoursesId = (req,res)=>{
         }
     });
 }
+
+// has bug
+exports.manGetUsers = function(user){
+
+    return (req,res)=>{
+        db.token.findOne({
+            token : req.session.token
+        }).then((ftoken)=>{
+            if (ftoken.type == "Edu_mangager") {
+                const obj = selType(user);
+                obj.find({type : user}).then(data => {
+                    if (!data) {
+                        res.status(404).send(
+                            { message : user +"s not found"}
+                        );
+                    }
+                    else{
+                        res.status(200).send({data});
+                    }
+                }).catch(err => {
+                    res.status(500).send(
+                        { message:"cant show " }
+                    );
+                });
+            }else{
+                res.status(401).send({
+                    message : "you cant see " + user + " list"
+                });
+            }
+        });
+    }
+}
+
+// has bug
+exports.manGetUsersId = function(user){
+
+    return (req,res)=>{
+        db.token.findOne({
+            token : req.session.token
+        }).then((ftoken)=>{
+            if (ftoken.type == "EducationManager")
+            {
+                const obj = selType(user);
+                const id = req.params.id;
+                obj.findById(id).then(data => {
+                    if (!data) {
+                        res.status(404).send({
+                            message : user +" not found"
+                        });
+                    }
+                    else{
+                        res.status(200).send({data});
+                    }
+                }).catch(err => {
+                    res.status(500).send(
+                        { message:"cant show " }
+                    );
+                });
+            }else{
+                res.status(401).send({
+                    message : "you cant see this" + user
+                });
+            }
+        });
+    }
+}
