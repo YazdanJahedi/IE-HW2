@@ -5,6 +5,7 @@ const { model } = require("mongoose");
 
 verifyToken = (req, res, next) => {
     let token = req.session.token;
+    console.log("verityToken midware");
     if (!token) {
       return res.status(403).send({ message: "No token provided!" });
     }

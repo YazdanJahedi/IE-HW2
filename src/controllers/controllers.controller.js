@@ -1,5 +1,5 @@
 const db = require("../models");
-const schemas = db.schemas;
+// const schemas = db.schemas;
 var bcrypt = require("bcrypt");
 
 function selType(user){
@@ -145,4 +145,59 @@ exports.findUser = function(user){
     }
 }
 
+exports.createCourse = (req,res)=> {
+    console.log("create course... user token : "+ req.session.token);
+    db.token.findOne({
+        token : req.session.token
+    }).then((ftoken)=>{
+        console.log("create course... user is found");
+        if (ftoken.type == "Edu_mangager"){
+            const obj = new db.basic_lesssons({
+                course_name : req.body.course_name,
+                pre_requisites : req.body.pre_requisites,
+                co_requisite : req.body.co_requisite,
+                units : req.body.units
+            }).save().then(()=>{
+                res.send(obj);
+            }).catch((err)=>{
+                res.status(500).send({
+                    message : err.message
+                })
+            })
+        } else{
+            res.status(401).send({
+                message : "you cant create course"
+            });
+        }
+    });
+}
+
+exports.deleteCourse = (req,res)=>{
+    db.token.findOne({
+        token : req.session.token
+    }).then((ftoken)=>{
+        if (ftoken.type == "Edu_mangager") {
+            const id = req.params.id;
+            db.basic_lesssons.findByIdAndRemove(id).then(data => {
+                if (!data) {
+                    res.status(404).send({
+                        message :"course not found"
+                    });
+                } else {
+                    res.status(200).send({
+                        message : "course deleted successfully"
+                    });
+                }
+            }).catch(err => {
+                res.status(500).send(
+                    { message:"cant delete course" }
+                );
+            });
+        }else{
+            res.status(401).send({
+                message : "you cant delete course"
+            });
+        }
+    });
+}
 

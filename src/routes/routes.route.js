@@ -31,7 +31,10 @@ module.exports = app =>{
     // admin:  change  student/prof/edu_manager
     // IN progress... !!!!
 
-    // Edu_manager: 
+    // Edu_manager: create/delete lesson
+    route.post('/course', [authJwt.verifyToken], controllers.createCourse);
+    route.delete('/course/:id', [authJwt.verifyToken], controllers.deleteCourse);
+
 
 
 
