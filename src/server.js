@@ -12,9 +12,9 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use( cookieSession({
+app.use(cookieSession({
       name: "some-session",
-      secret: "SOME_THING", // should use as secret environment variable
+      secret: "SOME_THING",
       httpOnly: true
     })
 );
@@ -26,10 +26,10 @@ db.mongoose
     useUnifiedTopology: true
   })
   .then(() => {
-    console.log("Connected to the database!");
+    console.log("Connected to the DataBase!");
   })
   .catch(err => {
-    console.log("Cannot connect to the database!", err);
+    console.log("fail: Cannot connect to the database!", err);
     process.exit();
   });
 
