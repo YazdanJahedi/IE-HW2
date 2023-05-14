@@ -46,7 +46,7 @@ module.exports = mongoose => {
 
     // ----------------------------------------------
 
-    const Edu_man_model = Users_model.discriminator('Edu_mangager', 
+    const Edu_man_model = Users_model.discriminator('Edu_manager', 
         new mongoose.Schema({
             faculty: String,
         })

@@ -1,5 +1,5 @@
-const authJwt = require("./authjwt.js");
+const jwt = require("./authjwt.js");
 
 module.exports = {
-  authJwt
+  authJwt: jwt
 };

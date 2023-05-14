@@ -12,6 +12,10 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+
+
+// remove this...
 app.use(cookieSession({
       name: "some-session",
       secret: "SOME_THING",

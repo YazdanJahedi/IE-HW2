@@ -1,21 +1,18 @@
+const { model, modelNames } = require("mongoose");
 const db = require("../models");
 var hash = require("bcrypt");
-let roles = ["Students", "Teachers", "Edu_mangager"];
-
-function selType(user) {
-  switch (user) {
-    case "Student":
-      return db.students;
-    case "Professor":
-      return db.teachers;
-    case "EducationManager":
-      return db.edu_managers;
-  }
+let roles = ["Students", "Teachers", "Edu_manager"];
+function get_db_model_by_role(model_name) {
+  if (model_name == roles[0]) return db.students;
+  else if (model_name == roles[1]) return db.teachers;
+  else if (model_name == roles[2]) return db.edu_managers;
+  else return null;
 }
 
 exports.admin_create_user = (model_name) => {
   return (req, res) => {
     let new_instance;
+    console.log(model_name)
     if (model_name == roles[0]) {
       new_instance = new db.students({
         firstname: req.body.firstname,
@@ -33,7 +30,7 @@ exports.admin_create_user = (model_name) => {
         study_field: req.body.study_field,
         courses: req.body.courses,
       });
-    } else if ((model_name = roles[1])) {
+    } else if (model_name == roles[1]) {
       new_instance = new db.teachers({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -74,26 +71,24 @@ exports.admin_create_user = (model_name) => {
   };
 };
 
-exports.deleteUser = function deleteUser(user) {
+exports.admin_delete_user = (user) => {
   return (req, res) => {
-    const id = req.params.id;
-    const obj = selType(user);
-    obj
-      .findByIdAndRemove(id)
+    const db_model = get_db_model_by_role(user);
+    db_model
+      .findByIdAndRemove(req.params.id)
       .then((data) => {
-        if (!data) {
+        if (!data)
           res.status(404).send({
-            message: "user not found",
+            message: "Fail: user not found in the database",
           });
-        } else {
-          res.status(200).send({
-            message: "user deleted successfully",
+        else
+          res.send({
+            message: "OK: delete one user",
           });
-        }
       })
       .catch((err) => {
         res.status(500).send({
-          message: "can't delete user",
+          message: "Fail: an Error happend while deleting user",
         });
       });
   };
@@ -101,7 +96,7 @@ exports.deleteUser = function deleteUser(user) {
 
 // has bug!!
 exports.findAllUsers = function findAllUsers(user) {
-  const obj = selType(user);
+  const obj = get_db_model_by_role(user);
   return (req, res) => {
     obj
       .find({ __t: "Students" })
@@ -120,7 +115,7 @@ exports.findAllUsers = function findAllUsers(user) {
 };
 
 exports.findUser = function (user) {
-  const obj = selType(user);
+  const obj = get_db_model_by_role(user);
   return (req, res) => {
     const id = req.params.id;
     obj
@@ -224,7 +219,7 @@ exports.manGetCourses = (req, res) => {
           });
       } else if (ftoken.type == "Student" || ftoken.type == "Professor") {
         const id = ftoken.user_id;
-        const obj = selType(ftoken.type); // todo: sync names
+        const obj = get_db_model_by_role(ftoken.type); // todo: sync names
         obj
           .findById(id)
           .select("courses")
@@ -268,7 +263,7 @@ exports.manGetCoursesId = (req, res) => {
       } else if (ftoken.type == "Student" || ftoken.type == "Professor") {
         const id = ftoken.user_id;
         const course_id = req.params.id;
-        const obj = selType(ftoken.type); // todo: sync names
+        const obj = get_db_model_by_role(ftoken.type); // todo: sync names
         obj
           .findById(id)
           .select("courses")
@@ -299,7 +294,7 @@ exports.manGetUsers = function (user) {
       })
       .then((ftoken) => {
         if (ftoken.type == "Edu_mangager") {
-          const obj = selType(user);
+          const obj = get_db_model_by_role(user);
           obj
             .find({ type: user })
             .then((data) => {
@@ -330,7 +325,7 @@ exports.manGetUsersId = function (user) {
       })
       .then((ftoken) => {
         if (ftoken.type == "EducationManager") {
-          const obj = selType(user);
+          const obj = get_db_model_by_role(user);
           const id = req.params.id;
           obj
             .findById(id)
