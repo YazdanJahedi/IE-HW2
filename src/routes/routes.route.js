@@ -43,19 +43,15 @@ module.exports = app =>{
     route.get('/professors',[authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_find_all_users(roles[1]));
     route.get('/professor/:id',[authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_find_users_by_id(roles[1]));
 
-    // Edu_manager find_all/find_by_id lessons
-    route.get('/courses', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_find_all_courses);
-    route.get('/course/:id', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_find_courses_by_id);
-
     // Student update student
     route.put('/student/:id', [authJwt.verifyToken, authJwt.verify_student], controllers.student_update_student);
 
     // Teacher update Teacher
     route.put('/professor/:id', [authJwt.verifyToken, authJwt.verify_teacher], controllers.teacher_update_teacher);
 
-    // Student/Teachers: find_all/find_by_id lessons
-    route.get('/course/:id',[authJwt.verifyToken], controllers.manGetCoursesId);
-    route.get('/courses',[authJwt.verifyToken], controllers.manGetCourses);
+    // Edu_manager-Student-Teacher  find_all/find_by_id  lessons
+    route.get('/courses', [authJwt.verifyToken], controllers.find_all_courses);
+    route.get('/course/:id', [authJwt.verifyToken], controllers.find_courses_by_id);
 
 
     app.use('/', route);

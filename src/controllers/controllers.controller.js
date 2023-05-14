@@ -260,41 +260,76 @@ exports.eduManager_find_users_by_id = function (model_name) {
   };
 };
 
-exports.eduManager_find_all_courses = (req, res) => {
-  db.basic_lesssons
-    .find()
-    .then((data) => {
-      if (!data)
-        res.status(404).send({
-          message: "courses are not found",
+exports.find_all_courses = (req, res) => {
+  if (req.decoded.__t == roles[2]) {
+    // manager:
+    console.log("/courses is for edu_man");
+    db.basic_lesssons
+      .find()
+      .then((data) => {
+        if (!data)
+          res.status(404).send({
+            message: "courses are not found",
+          });
+        else res.status(200).send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({ message: err });
+      });
+  } else {
+    // studnt or teacher
+    console.log(`/courses is for ${req.decoded.__t}`);
+    get_db_model_by_role(req.decoded.__t)
+      .findById(req.decoded.id)
+      .then((data) => {
+        res.status(200).send(data.courses);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err,
         });
-      else res.status(200).send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err });
-    });
+      });
+  }
 };
 
-exports.eduManager_find_courses_by_id = (req, res) => {
-  db.basic_lesssons
-    .findById(req.params.id)
-    .then((data) => {
-      if (!data) {
-        res.status(404).send({
-          message: "courses are not found",
+exports.find_courses_by_id = (req, res) => {
+  if (req.decoded.__t == roles[2]) {
+    // edu manager
+    db.basic_lesssons
+      .findById(req.params.id)
+      .then((data) => {
+        if (!data) {
+          res.status(404).send({
+            message: "courses are not found",
+          });
+        } else {
+          res.status(200).send(data);
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({ message: err });
+      });
+  } else {
+    // student or teacher
+    // todo
+    get_db_model_by_role(req.decoded.__t)
+      .findById(req.decoded.id)
+      .then((data) => {
+        res.status(200).send(data.courses);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: err,
         });
-      } else {
-        res.status(200).send(data);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send({ message: err });
-    });
+      });
+  }
 };
 
 exports.student_update_student = (req, res) => {
   if (req.params.id != req.decoded.id)
-    return res.status(403).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
+    return res.status(403).send({
+      message: `you entered someone else id yours is ${req.decoded.id}`,
+    });
 
   db.students
     .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
@@ -310,7 +345,9 @@ exports.student_update_student = (req, res) => {
 
 exports.teacher_update_teacher = (req, res) => {
   if (req.params.id != req.decoded.id)
-    return res.status(403).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
+    return res.status(403).send({
+      message: `you entered someone else id yours is ${req.decoded.id}`,
+    });
 
   db.teachers
     .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
@@ -321,34 +358,6 @@ exports.teacher_update_teacher = (req, res) => {
       res.status(500).send({
         message: err,
       });
-    });
-};
-
-// todo
-exports.manGetCourses = (req, res) => {
-  db.token
-    .findOne({
-      token: req.session.token,
-    })
-    .then((ftoken) => {
-      
-      if (ftoken.type == "Student" || ftoken.type == "Professor") {
-        const id = ftoken.user_id;
-        const obj = get_db_model_by_role(ftoken.type); // todo: sync names
-        obj
-          .findById(id)
-          .select("courses")
-          .then((data) => {
-            // check
-            res.status(200).send({
-              data,
-            });
-          });
-      } else {
-        res.status(401).send({
-          message: "you cant see courses list",
-        });
-      }
     });
 };
 
