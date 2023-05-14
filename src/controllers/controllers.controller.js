@@ -193,49 +193,105 @@ exports.eduManager_create_course = (req, res) => {
 
 exports.eduManager_update_course = (req, res) => {
   db.basic_lesssons
-  .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
-  .then((data) => {
-    res.send({ message: "OK: data is updated" });
-  })
-  .catch((err) => {
-    res.status(500).send({
-      message: err,
-    });
-  });
-}
-
-exports.eduManager_delete_course = (req, res) => {
-  db.token
-    .findOne({
-      token: req.session.token,
+    .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
+    .then((data) => {
+      res.send({ message: "OK: data is updated" });
     })
-    .then((ftoken) => {
-      if (ftoken.type == "Edu_mangager") {
-        const id = req.params.id;
-        db.basic_lesssons
-          .findByIdAndRemove(id)
-          .then((data) => {
-            if (!data) {
-              res.status(404).send({
-                message: "course not found",
-              });
-            } else {
-              res.status(200).send({
-                message: "course deleted successfully",
-              });
-            }
-          })
-          .catch((err) => {
-            res.status(500).send({ message: "cant delete course" });
-          });
-      } else {
-        res.status(401).send({
-          message: "you cant delete course",
-        });
-      }
+    .catch((err) => {
+      res.status(500).send({
+        message: err,
+      });
     });
 };
 
+exports.eduManager_delete_course = (req, res) => {
+  const id = req.params.id;
+  db.basic_lesssons
+    .findByIdAndRemove(id)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: "course not found",
+        });
+      } else {
+        res.status(200).send({
+          message: "course deleted successfully",
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({ message: "cant delete course" });
+    });
+};
+
+exports.eduManager_find_all_users = function (model_name) {
+  return (req, res) => {
+    get_db_model_by_role(model_name)
+      .find()
+      .then((data) => {
+        if (!data) {
+          res.status(404).send({ message: `${model_name} not found` });
+        } else {
+          res.status(200).send(data);
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({ message: err });
+      });
+  };
+};
+
+exports.eduManager_find_users_by_id = function (model_name) {
+  return (req, res) => {
+    get_db_model_by_role(model_name)
+      .findById(req.params.id)
+      .then((data) => {
+        if (!data) {
+          res.status(404).send({
+            message: `${model_name} not found`,
+          });
+        } else {
+          res.status(200).send(data);
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({ message: err });
+      });
+  };
+};
+
+exports.eduManager_find_all_courses = (req, res) =>{
+  db.basic_lesssons
+  .find()
+  .then((data) => {
+    if (!data) 
+      res.status(404).send({
+        message: "courses are not found",
+      });
+     else res.status(200).send(data);
+    
+  })
+  .catch((err) => {
+    res.status(500).send({ message: err });
+  });
+}
+
+exports.eduManager_find_courses_by_id = (req, res) =>{
+  db.basic_lesssons
+  .findById(req.params.id)
+  .then((data) => {
+    if (!data) {
+      res.status(404).send({
+        message: "courses are not found",
+      });
+    } else {
+      res.status(200).send(data);
+    }
+  })
+  .catch((err) => {
+    res.status(500).send({ message: err });
+  });
+}
 
 // todo
 exports.manGetCourses = (req, res) => {
@@ -325,69 +381,4 @@ exports.manGetCoursesId = (req, res) => {
         });
       }
     });
-};
-
-// has bug
-exports.manGetUsers = function (user) {
-  return (req, res) => {
-    db.token
-      .findOne({
-        token: req.session.token,
-      })
-      .then((ftoken) => {
-        if (ftoken.type == "Edu_mangager") {
-          const obj = get_db_model_by_role(user);
-          obj
-            .find({ type: user })
-            .then((data) => {
-              if (!data) {
-                res.status(404).send({ message: user + "s not found" });
-              } else {
-                res.status(200).send({ data });
-              }
-            })
-            .catch((err) => {
-              res.status(500).send({ message: "cant show " });
-            });
-        } else {
-          res.status(401).send({
-            message: "you cant see " + user + " list",
-          });
-        }
-      });
-  };
-};
-
-// has bug
-exports.manGetUsersId = function (user) {
-  return (req, res) => {
-    db.token
-      .findOne({
-        token: req.session.token,
-      })
-      .then((ftoken) => {
-        if (ftoken.type == "EducationManager") {
-          const obj = get_db_model_by_role(user);
-          const id = req.params.id;
-          obj
-            .findById(id)
-            .then((data) => {
-              if (!data) {
-                res.status(404).send({
-                  message: user + " not found",
-                });
-              } else {
-                res.status(200).send({ data });
-              }
-            })
-            .catch((err) => {
-              res.status(500).send({ message: "cant show " });
-            });
-        } else {
-          res.status(401).send({
-            message: "you cant see this" + user,
-          });
-        }
-      });
-  };
 };
