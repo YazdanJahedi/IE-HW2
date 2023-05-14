@@ -12,7 +12,6 @@ function get_db_model_by_role(model_name) {
 exports.admin_create_user = (model_name) => {
   return (req, res) => {
     let new_instance;
-    console.log(model_name)
     if (model_name == roles[0]) {
       new_instance = new db.students({
         firstname: req.body.firstname,
@@ -71,10 +70,9 @@ exports.admin_create_user = (model_name) => {
   };
 };
 
-exports.admin_delete_user = (user) => {
+exports.admin_delete_user = (model_name) => {
   return (req, res) => {
-    const db_model = get_db_model_by_role(user);
-    db_model
+    get_db_model_by_role(model_name)
       .findByIdAndRemove(req.params.id)
       .then((data) => {
         if (!data)
@@ -94,19 +92,12 @@ exports.admin_delete_user = (user) => {
   };
 };
 
-// has bug!!
-exports.findAllUsers = function findAllUsers(user) {
-  const obj = get_db_model_by_role(user);
+exports.admin_find_all_users = (model_name) => {
   return (req, res) => {
-    obj
-      .find({ __t: "Students" })
+    get_db_model_by_role(model_name)
+      .find()
       .then((data) => {
-        if (!data) {
-          res.status(500).send({ message: "list is empty" });
-        } else {
-          console.log(data);
-          res.send(data);
-        }
+        res.send(data);
       })
       .catch((err) => {
         res.status(500).send({ message: err.message });
@@ -114,18 +105,16 @@ exports.findAllUsers = function findAllUsers(user) {
   };
 };
 
-exports.findUser = function (user) {
-  const obj = get_db_model_by_role(user);
+exports.admin_find_users_by_id = function (user) {
   return (req, res) => {
-    const id = req.params.id;
-    obj
-      .findById(id)
+    get_db_model_by_role(user)
+      .findById(req.params.id)
       .then((data) => {
         res.status(200).send(data);
       })
       .catch((err) => {
         res.status(500).send({
-          message: err.message || "Some error occurred while retrieving user.",
+          message: err,
         });
       });
   };

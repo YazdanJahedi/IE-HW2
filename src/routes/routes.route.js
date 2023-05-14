@@ -19,14 +19,14 @@ module.exports = app =>{
     route.delete('/admin/manager/:id',controllers.admin_delete_user(roles[2]));
     
     // admin:  find_all   student/prof/edu_manager
-    route.get('/admin/students', controllers.findAllUsers(roles[0]));
-    route.get('/admin/professors', controllers.findAllUsers(roles[1]));
-    route.get('/admin/managers', controllers.findAllUsers(roles[2]));
+    route.get('/admin/students', controllers.admin_find_all_users(roles[0]));
+    route.get('/admin/professors', controllers.admin_find_all_users(roles[1]));
+    route.get('/admin/managers', controllers.admin_find_all_users(roles[2]));
 
     // admin:  find_by_ID  student/prof/edu_manager
-    route.get('/admin/student/:id', controllers.findUser(roles[0]));
-    route.get('/admin/professor/:id', controllers.findUser(roles[1]));
-    route.get('/admin/manager/:id', controllers.findUser(roles[2]));
+    route.get('/admin/student/:id', controllers.admin_find_users_by_id(roles[0]));
+    route.get('/admin/professor/:id', controllers.admin_find_users_by_id(roles[1]));
+    route.get('/admin/manager/:id', controllers.admin_find_users_by_id(roles[2]));
 
     // admin:  change  student/prof/edu_manager
     // IN progress... !!!!
