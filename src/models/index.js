@@ -16,6 +16,5 @@ db.edu_managers = all_models.eduManagers;
 db.it_manager = all_models.ITManager;
 db.basic_lesssons = all_models.basicLessons;
 db.termic_lessons = all_models.termicLessons;
-db.token = all_models.token;
 
 module.exports = db;

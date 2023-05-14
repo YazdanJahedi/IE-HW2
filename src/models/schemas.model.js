@@ -93,19 +93,6 @@ module.exports = mongoose => {
 
     // ----------------------------------------------
 
-    let token_schema = new mongoose.Schema(
-      {
-          user_id : String,
-          token : String,
-          type : String
-      }
-    );
-
-    token_schema.index( { "expireAt": 1 }, { expireAfterSeconds: 600 } );
-    const Token_model = new mongoose.model("Token",token_schema);
-
-    // ----------------------------------------------
-
     return {
         users: Users_model,
         students: Students_model,
@@ -114,6 +101,5 @@ module.exports = mongoose => {
         ITManager: IT_man_model,
         basicLessons: Lessons_model,
         termicLessons: Termic_model,
-        token: Token_model,
     };
   };

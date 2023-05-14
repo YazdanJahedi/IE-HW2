@@ -1,7 +1,6 @@
 module.exports = app =>{
     const controllers = require("../controllers/controllers.controller.js");
     var route = require('express').Router();
-    const auth = require("../controllers/auth.controller.js");
     const {authJwt} = require("../middlewares");
     let roles = ["Students", "Teachers", "Edu_manager"];
    
@@ -33,9 +32,10 @@ module.exports = app =>{
     route.put('/admin/professor/:id', controllers.admin_update_users(roles[1]));
     route.put('/admin/manager/:id', controllers.admin_update_users(roles[2]));
 
-    // Edu_manager: create/delete lesson
-    route.post('/course', [authJwt.verifyToken], controllers.createCourse);
-    route.delete('/course/:id', [authJwt.verifyToken], controllers.deleteCourse);
+    // Edu_manager: create/update/delete lesson
+    route.post('/course', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_create_course);
+    route.put('/course/:id', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_update_course);
+    route.delete('/course/:id', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_delete_course);
 
     // Edu_manager/Student/Teachers: find_all/find_by_id lessons
     route.get('/course/:id',[authJwt.verifyToken], controllers.manGetCoursesId);

@@ -14,15 +14,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
 
-
-// remove this...
-app.use(cookieSession({
-      name: "some-session",
-      secret: "SOME_THING",
-      httpOnly: true
-    })
-);
-
 const db = require("./models");
 db.mongoose
   .connect(db.url, {
