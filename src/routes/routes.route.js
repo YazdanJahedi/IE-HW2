@@ -6,7 +6,7 @@ module.exports = app =>{
     let roles = ["Students", "Teachers", "Edu_manager"];
    
     // users login
-    route.post('/login', auth.login);
+    route.post('/login', controllers.login);
 
     // admin:  create  student/prof/edu_manager
     route.post('/admin/student', controllers.admin_create_user(roles[0]));
@@ -14,9 +14,9 @@ module.exports = app =>{
     route.post('/admin/manager', controllers.admin_create_user(roles[2]));
 
     // admin:  delete  student/prof/edu_manager
-    route.delete('/admin/student/:id',controllers.admin_delete_user(roles[0]));
-    route.delete('/admin/professor/:id',controllers.admin_delete_user(roles[1]));
-    route.delete('/admin/manager/:id',controllers.admin_delete_user(roles[2]));
+    route.delete('/admin/student/:id', controllers.admin_delete_user(roles[0]));
+    route.delete('/admin/professor/:id', controllers.admin_delete_user(roles[1]));
+    route.delete('/admin/manager/:id', controllers.admin_delete_user(roles[2]));
     
     // admin:  find_all   student/prof/edu_manager
     route.get('/admin/students', controllers.admin_find_all_users(roles[0]));
@@ -29,7 +29,9 @@ module.exports = app =>{
     route.get('/admin/manager/:id', controllers.admin_find_users_by_id(roles[2]));
 
     // admin:  change  student/prof/edu_manager
-    // IN progress... !!!!
+    route.put('/admin/student/:id', controllers.admin_update_users(roles[0]));
+    route.put('/admin/professor/:id', controllers.admin_update_users(roles[1]));
+    route.put('/admin/manager/:id', controllers.admin_update_users(roles[2]));
 
     // Edu_manager: create/delete lesson
     route.post('/course', [authJwt.verifyToken], controllers.createCourse);
