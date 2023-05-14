@@ -1,5 +1,4 @@
 const db = require("../models");
-// const schemas = db.schemas;
 var bcrypt = require("bcrypt");
 
 function selType(user){
@@ -15,18 +14,16 @@ function selType(user){
 }
 
 
-exports.createUser = function createUser(user){
-    return  (req, res) => {
-        console.log(req.body);
-        let obj = null;
-        const hashed_password = bcrypt.hashSync(req.body.password, 8);
+exports.admin_create_user = (user) => {
+    return (req, res) => {
+        let obj;
         switch(user){
             case "Student" :
                 obj = new db.students({
                     firstname : req.body.firstname,
                     lastname: req.body.lastname,
                     user_id : req.body.user_id,
-                    password : hashed_password,
+                    password : bcrypt.hashSync(req.body.password, 8),
                     email : req.body.email,
                     phone_number: req.body.phone_numer,
                     // --------------------
@@ -44,7 +41,7 @@ exports.createUser = function createUser(user){
                     firstname : req.body.firstname,
                     lastname: req.body.lastname,
                     user_id : req.body.user_id,
-                    password : hashed_password,
+                    password : bcrypt.hashSync(req.body.password, 8),
                     email : req.body.email,
                     phone_number: req.body.phone_numer,
                     // --------------------
@@ -59,7 +56,7 @@ exports.createUser = function createUser(user){
                     firstname : req.body.firstname,
                     lastname: req.body.lastname,
                     user_id : req.body.user_id,
-                    password : hashed_password,
+                    password : bcrypt.hashSync(req.body.password, 8),
                     email : req.body.email,
                     phone_number: req.body.phone_numer,
                     // --------------------
@@ -68,11 +65,7 @@ exports.createUser = function createUser(user){
                 break;
 
         }
-        if (obj == null){
-            res.status(400).send({
-                message : "can only add student professor and em"
-            })
-        } else {
+
             obj.save().then(()=>{
                 res.send(obj);
             }).catch(err=>{
@@ -80,7 +73,7 @@ exports.createUser = function createUser(user){
                     message : err.message
                 });
             });
-        }
+        
     }
 }
 
@@ -114,7 +107,7 @@ exports.deleteUser = function deleteUser(user){
 exports.findAllUsers =  function findAllUsers(user) {
     const obj = selType(user);
     return  (req,res) => {
-        obj.find({type : user}).then(data=>{
+        obj.find({__t: "Students"}).then(data=>{
             if (!data) {
                 res.status(500).send(
                     { message : "list is empty" }
