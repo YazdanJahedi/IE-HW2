@@ -1,0 +1,1336 @@
+openapi: 3.0.0
+info:
+  title: CRUD API for unit selection system
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+tags:
+- name: admin
+  description: Operations admin can perform
+- name: student
+  description: Operations students can perform
+- name: professor
+  description: Operations professors can perform
+- name: manager
+  description: Operations managers can perform
+
+paths:
+  /login:
+    post:
+      description: loging in using credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                user_id:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: successfull login
+          content:
+            application/json:
+              schema:
+                properties:
+                  accessToken:
+                    type: string
+                  id:
+                    type: string
+        "404":
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: invalid password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: an error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /admin/professor:
+    post:
+      tags:
+      - admin
+      description: create a new professor document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      responses:
+        "200":
+          description: successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    get:
+      tags:
+      - admin
+      description: return list of professors
+      responses:
+        "200":
+          description: all professors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Professor'
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /admin/Professor/{ID}:
+    get:
+      tags:
+      - admin
+      description: get professors info
+      parameters:
+      - name: ID
+        required: true
+        schema:
+          type: string
+
+        in: path
+        description: document id of professor
+
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        "403":
+          description: not authorized
+        "500":
+          description: server error
+        "400":
+          description: bad request
+        "404":
+          description: not found
+    put:
+      tags:
+      - admin
+      description: edit professor info
+      parameters:
+      - name: ID
+        required: true
+        schema:
+          type: string
+        in: path
+        description: document id of professor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      responses:
+        "200":
+          description: successfully edited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      tags:
+      - admin
+      description: delete professor document
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        schema:
+          type: string
+        description: professor document id
+      responses:
+        "200":
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /admin/student:
+    post:
+      tags:
+      - admin
+      description: create a new student document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      responses:
+        "200":
+          description: successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Professor'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    get:
+      tags:
+      - admin
+      description: return list of students
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /admin/student/{ID}:
+    get:
+      tags:
+      - admin
+      description: get students info
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        schema:
+          type: string
+        description: document id of student
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        "403":
+          description: not authorized
+        "500":
+          description: server error
+        "400":
+          description: bad request
+        "404":
+          description: not found
+    put:
+      tags:
+      - admin
+      description: edit students info
+      parameters:
+      - name: ID
+        required: true
+        schema:
+          type: string
+
+        in: path
+        description: document id of student
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Professor'
+      responses:
+        "200":
+          description: successfully edited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      tags:
+      - admin
+      description: delete student document
+      parameters:
+      - name: ID
+        required: true
+        schema:
+          type: string
+        in: path
+        description: professor document id
+      responses:
+        "200":
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /admin/manager:
+    post:
+      tags:
+      - admin
+      description: create a new manager document
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EducationalManager'
+      responses:
+        "200":
+          description: successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EducationalManager'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    get:
+      tags:
+      - admin
+      description: return list of managers
+      responses:
+        "200":
+          description: all managers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EducationalManager'
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /admin/manager/{ID}:
+    get:
+      tags:
+      - admin
+      description: get managers info
+      parameters:
+
+      - name: ID
+        in: path
+        required: true
+        schema:
+          type: string
+
+        description: document id of manager
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EducationalManager'
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      tags:
+      - admin
+      description: edit managers info
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        schema:
+          type: string
+
+        description: document id of manager
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EducationalManager'
+      responses:
+        "200":
+          description: successfully edited
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: authentication error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      tags:
+      - admin
+      description: delete managers document
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        schema:
+          type: string
+
+        description: manager document id
+      responses:
+        "200":
+          description: successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: not authorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /course:
+    post:
+      tags:
+      - manager
+      description: create a new course
+      requestBody:
+        content:
+          application/json:
+            schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Course'
+                  - $ref: '#/components/schemas/TermCourse'
+      responses:
+        "200":
+          description: create a new course
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Course'
+                  - $ref: '#/components/schemas/TermCourse'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /course/{ID}:
+    get:
+      tags:
+      - manager
+      - student
+      - professor
+      description: create a new course
+      parameters:
+      - name: ID
+        in: path
+        required: true
+
+        description:  course document id
+        schema:
+          type: string
+      responses:
+        "200":
+          description: create a new course
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Course'
+                  - $ref: '#/components/schemas/TermCourse'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      tags:
+      - manager
+      description: edit a course
+      parameters:
+      - name: ID
+        required: true
+
+        in: path
+        description: The ID of the course
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/Course'
+                - $ref: '#/components/schemas/TermCourse'
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      tags:
+      - manager
+      description: delete a course
+      parameters:
+      - name: ID
+        in: path
+        description: course id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /courses:
+    get:
+      tags:
+      - manager
+      - student
+      - professor
+      description: get the courses with major query
+      parameters:
+      - name: majorquery
+        in: query
+        description: courses major
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: get all the courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: '#/components/schemas/Course'
+                  - $ref: '#/components/schemas/TermCourse'
+        "403":
+          description: authentication problem
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: error eccured
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          description: bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+components:
+  schemas:
+    Professor:
+      required:
+      - department
+      - email
+      - major
+      - name
+      - user_id
+      - password
+      - phone_no
+      - rank
+      - userType
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          format: objectId
+          example: 645e645a3154c5c19dec0c23
+        name:
+          type: string
+          example: jack
+        password:
+          type: string
+          example: pass
+        email:
+          type: string
+          example: example@example.com
+        phone:
+          type: string
+          example: 0900000000
+        user_id:
+          type: string
+          example: 992232
+        department:
+          type: string
+          example: EE
+        major:
+          type: string
+          example: CS
+        rank:
+          type: string
+          example: full
+    Student:
+      required:
+      - department
+      - email
+      - entry_term
+      - entry_year
+      - major
+      - name
+      - gpa
+      - degree
+      - id
+      - password
+      - phone_no
+      - userType
+      - user_id
+      type: object
+      properties:
+        user_id:
+          type: string
+          example: 12422
+        department:
+          type: string
+          example: EE
+        major:
+          type: string
+          example: EE
+        gpa:
+          type: number
+          example: 3
+        degree:
+          type: string
+          example: bsc
+        id:
+          type: string
+          format: objectId
+          example: 645e645a3154c5c19dec0c23
+        entry_year:
+          type: number
+          example: 1400
+        entry_term:
+          type: number
+          example: 2
+        name:
+          type: string
+          example: jack
+        password:
+          type: string
+          example: pass
+        email:
+          type: string
+          example: ex@ex.com
+        phone_no:
+          type: string
+          example: 09111111111
+        userType:
+          type: string
+          example: Professor
+    EducationalManager:
+      required:
+      - user_id
+      - department
+      - email
+      - name
+      - id
+      - password
+      - phone_no
+      - userType
+      type: object
+      properties:
+        user_id:
+          type: string
+          example: 12422
+        department:
+          type: string
+          example: EE
+        id:
+          type: string
+          format: objectId
+          example: 645e645a3154c5c19dec0c23
+        name:
+          type: string
+          example: jack
+        password:
+          type: string
+          example: pass
+        email:
+          type: string
+          example: ex@ex.com
+        phone_no:
+          type: string
+          example: 09111111111
+        userType:
+          type: string
+          example: EducationalManager
+    Course:
+      required:
+      - name
+      - corequisites
+      - prerequisites
+      - unit_no
+      - major
+      - id
+      - userType
+      type: object
+      properties:
+        major:
+          type: string
+          example: Computer Science
+        unit_no:
+          type: number
+          example: 2
+        id:
+          type: string
+          format: objectId
+          example: 645e645a3154c5c19dec0c23
+        name:
+          type: string
+          example: DB
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        corequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    TermCourse:
+      required:
+      - class_time
+      - exam_time
+      - exam_location
+      - id
+      - professor
+      - term
+      - capacity
+      - name
+      - corequisites
+      - prerequisites
+      - unit_no
+      - major
+      - userType
+      type: object
+      properties:
+        major:
+          type: string
+          example: Computer Science
+        unit_no:
+          type: number
+          example: 2
+        name:
+          type: string
+          example: DB
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        corequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        id:
+          type: string
+          format: objectId
+          example: 645e645a3154c5c19dec0c23
+        professor:
+          type: string
+          format: objectId
+          example: 645cad86f1b719bad0c9e916
+        capacity:
+          type: number
+          example: 50
+        term:
+          type: string
+          example: fall
+        course:
+          type: string
+          format: objectId
+          example: 645cad86f1b719bad0c9e916
+        exam_location:
+          type: string
+          example: cs dep.
+        exam_time:
+          type: string
+          example: 2023-03-18
