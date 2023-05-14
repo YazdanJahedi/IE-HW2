@@ -6,7 +6,7 @@ const cookieSession = require("cookie-session");
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:8081",
 };
 
 app.use(cors(corsOptions));
@@ -18,16 +18,15 @@ const db = require("./models");
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Connected to the DataBase!");
   })
-  .catch(err => {
+  .catch((err) => {
     console.log("fail: Cannot connect to the database!", err);
     process.exit();
   });
-
 
 // simple basic route
 app.get("/", (req, res) => {
