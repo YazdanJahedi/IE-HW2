@@ -1,25 +1,20 @@
 const jwt = require("jsonwebtoken");
-const config = require("../config/auth.config.js");
-const db = require("../models");
-const { model } = require("mongoose");
+const auth_config = require("../config/auth.config.js");
 
 verifyToken = (req, res, next) => {
-    let token = req.session.token;
-    console.log("verityToken midware");
-    if (!token) {
-      return res.status(403).send({ message: "No token provided!" });
-    }
-    jwt.verify(token, config.secret, (err, decoded) => {
-      if (err) {
-        return res.status(401).send({ message: "Unauthorized!" });
-      }
+    console.log("VerityToken middleware");
+
+    let user_token = req.session.token;
+    jwt.verify(user_token, auth_config.secret, (err, decoded) => {
+      if (err) 
+        return res.status(401).send({ message: "Not authorized" });  
       req._id = decoded.id;
       next();
     });
 };
 
-const authJwt = {
+const authjwt = {
     verifyToken
 }
   
-module.exports = authJwt;
+module.exports = authjwt;
