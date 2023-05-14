@@ -48,7 +48,10 @@ module.exports = app =>{
     route.get('/course/:id', [authJwt.verifyToken, authJwt.verify_edu_manager], controllers.eduManager_find_courses_by_id);
 
     // Student update student
-    route.put('/student/:id', [authJwt.verifyToken, authJwt.verify_student], controllers.student_update_student)
+    route.put('/student/:id', [authJwt.verifyToken, authJwt.verify_student], controllers.student_update_student);
+
+    // Teacher update Teacher
+    route.put('/professor/:id', [authJwt.verifyToken, authJwt.verify_teacher], controllers.teacher_update_teacher);
 
     // Student/Teachers: find_all/find_by_id lessons
     route.get('/course/:id',[authJwt.verifyToken], controllers.manGetCoursesId);

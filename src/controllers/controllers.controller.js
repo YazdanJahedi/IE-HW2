@@ -294,9 +294,25 @@ exports.eduManager_find_courses_by_id = (req, res) => {
 
 exports.student_update_student = (req, res) => {
   if (req.params.id != req.decoded.id)
-    return res.status(401).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
+    return res.status(403).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
 
   db.students
+    .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
+    .then((data) => {
+      res.send({ message: "OK: data is updated" });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err,
+      });
+    });
+};
+
+exports.teacher_update_teacher = (req, res) => {
+  if (req.params.id != req.decoded.id)
+    return res.status(403).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
+
+  db.teachers
     .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
     .then((data) => {
       res.send({ message: "OK: data is updated" });
@@ -315,22 +331,8 @@ exports.manGetCourses = (req, res) => {
       token: req.session.token,
     })
     .then((ftoken) => {
-      if (ftoken.type == "Edu_mangager") {
-        db.basic_lesssons
-          .find()
-          .then((data) => {
-            if (!data) {
-              res.status(404).send({
-                message: "courses not found",
-              });
-            } else {
-              res.status(200).send({ data });
-            }
-          })
-          .catch((err) => {
-            res.status(500).send({ message: "cant show " });
-          });
-      } else if (ftoken.type == "Student" || ftoken.type == "Professor") {
+      
+      if (ftoken.type == "Student" || ftoken.type == "Professor") {
         const id = ftoken.user_id;
         const obj = get_db_model_by_role(ftoken.type); // todo: sync names
         obj
