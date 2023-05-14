@@ -260,38 +260,53 @@ exports.eduManager_find_users_by_id = function (model_name) {
   };
 };
 
-exports.eduManager_find_all_courses = (req, res) =>{
+exports.eduManager_find_all_courses = (req, res) => {
   db.basic_lesssons
-  .find()
-  .then((data) => {
-    if (!data) 
-      res.status(404).send({
-        message: "courses are not found",
-      });
-     else res.status(200).send(data);
-    
-  })
-  .catch((err) => {
-    res.status(500).send({ message: err });
-  });
-}
+    .find()
+    .then((data) => {
+      if (!data)
+        res.status(404).send({
+          message: "courses are not found",
+        });
+      else res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err });
+    });
+};
 
-exports.eduManager_find_courses_by_id = (req, res) =>{
+exports.eduManager_find_courses_by_id = (req, res) => {
   db.basic_lesssons
-  .findById(req.params.id)
-  .then((data) => {
-    if (!data) {
-      res.status(404).send({
-        message: "courses are not found",
+    .findById(req.params.id)
+    .then((data) => {
+      if (!data) {
+        res.status(404).send({
+          message: "courses are not found",
+        });
+      } else {
+        res.status(200).send(data);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err });
+    });
+};
+
+exports.student_update_student = (req, res) => {
+  if (req.params.id != req.decoded.id)
+    return res.status(401).send({ message: `you entered someone else id yours is ${req.decoded.id}` });
+
+  db.students
+    .findByIdAndUpdate(req.params.id, req.body, { useFindAndModify: false })
+    .then((data) => {
+      res.send({ message: "OK: data is updated" });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err,
       });
-    } else {
-      res.status(200).send(data);
-    }
-  })
-  .catch((err) => {
-    res.status(500).send({ message: err });
-  });
-}
+    });
+};
 
 // todo
 exports.manGetCourses = (req, res) => {
